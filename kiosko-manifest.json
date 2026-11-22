@@ -1,0 +1,882 @@
+{
+  "manifest": 1,
+  "id": "switchbot",
+  "package": "kiosko-plugin-switchbot",
+  "name": {
+    "en": "SwitchBot",
+    "es": "SwitchBot",
+    "de": "SwitchBot",
+    "zh-Hans": "SwitchBot",
+    "zh-Hant": "SwitchBot"
+  },
+  "version": "0.1.0",
+  "description": {
+    "en": "Your SwitchBot thermometers, door and motion sensors on the panel, heard straight from the computer's Bluetooth: no hub, no cloud, no pairing. With a full-screen warning when a door is left open.",
+    "es": "Tus termómetros, sensores de puerta y de movimiento SwitchBot en el panel, oídos directamente por el Bluetooth del ordenador: sin hub, sin nube y sin emparejar. Con un aviso a pantalla completa si una puerta se queda abierta.",
+    "de": "Deine SwitchBot-Thermometer, Tür- und Bewegungssensoren auf dem Panel, direkt über das Bluetooth des Computers gehört: ohne Hub, ohne Cloud, ohne Koppeln. Mit einer Vollbild-Warnung, wenn eine Tür offen bleibt.",
+    "zh-Hans": "在副屏上查看你的 SwitchBot 温湿度计、门窗传感器和人体传感器，直接用电脑的蓝牙接收：无需网关、云端或配对。门忘关时全屏提醒。",
+    "zh-Hant": "在面板上查看你的 SwitchBot 溫濕度計、門窗感測器和人體感測器，直接用電腦的藍牙接收：不必網關、雲端或配對。門忘了關時全螢幕提醒。"
+  },
+  "author": "Loksly",
+  "license": "MIT",
+  "homepage": "https://github.com/kiosko-lcd/kiosko-plugin-switchbot#readme",
+  "repository": "https://github.com/kiosko-lcd/kiosko-plugin-switchbot",
+  "icon": "thermometer",
+  "sdk": "^0.2.0",
+  "platforms": [
+    "linux"
+  ],
+  "languages": [
+    "en",
+    "es",
+    "de",
+    "zh-Hant",
+    "zh-Hans"
+  ],
+  "categories": [
+    "info"
+  ],
+  "tags": [
+    "switchbot",
+    "temperature",
+    "humidity",
+    "bluetooth",
+    "door",
+    "window",
+    "contact",
+    "motion",
+    "presence",
+    "battery"
+  ],
+  "permissions": {
+    "exec": [
+      "bluetoothctl",
+      "busctl"
+    ],
+    "devices": [
+      "bluetooth"
+    ]
+  },
+  "riskyOptions": [],
+  "requires": [],
+  "optional": [],
+  "widgets": [
+    {
+      "type": "switchbot/climate",
+      "name": {
+        "en": "Room climate",
+        "es": "Clima de casa",
+        "de": "Raumklima",
+        "zh-Hans": "室内温湿度",
+        "zh-Hant": "室內溫濕度"
+      },
+      "description": {
+        "en": "Temperature and humidity of each SwitchBot thermometer: big, with an arrow when it is rising or falling and a line of the last hours. One fills the tile; several share it.",
+        "es": "Temperatura y humedad de cada termómetro SwitchBot: en grande, con una flecha cuando sube o baja y una línea de las últimas horas. Uno llena la tesela; varios se la reparten.",
+        "de": "Temperatur und Luftfeuchte jedes SwitchBot-Thermometers: groß, mit einem Pfeil, wenn sie steigt oder fällt, und einer Linie der letzten Stunden. Eines füllt die Kachel, mehrere teilen sie.",
+        "zh-Hans": "每个 SwitchBot 温湿度计的温度和湿度：大字显示，升降时带箭头，并附最近几小时的曲线。一个占满格子，多个则平分。",
+        "zh-Hant": "每個 SwitchBot 溫濕度計的溫度和濕度：大字顯示，升降時帶箭頭，並附最近幾小時的曲線。一個佔滿方格，多個則平分。"
+      },
+      "icon": "thermometer",
+      "category": "info",
+      "tags": [
+        "switchbot",
+        "temperature",
+        "humidity",
+        "bluetooth"
+      ],
+      "size": {
+        "min": {
+          "w": 120,
+          "h": 40
+        },
+        "preferred": {
+          "w": 480,
+          "h": 240
+        }
+      },
+      "chrome": "card",
+      "sources": [
+        "switchbot/devices"
+      ],
+      "options": {
+        "default": {
+          "devices": [],
+          "historyMs": 43200000
+        },
+        "x-ui": {},
+        "type": "object",
+        "properties": {
+          "devices": {
+            "title": "Devices",
+            "description": "Which to show, by name or address; !name leaves one out. Empty: all.",
+            "default": [],
+            "x-ui": {
+              "label": {
+                "en": "Devices",
+                "es": "Dispositivos",
+                "de": "Geräte",
+                "zh-Hans": "设备",
+                "zh-Hant": "裝置"
+              },
+              "help": {
+                "en": "Which to show, by name or address; !name leaves one out. Empty: all.",
+                "es": "Cuáles mostrar, por nombre o dirección; !nombre quita uno. Vacío: todos.",
+                "de": "Welche gezeigt werden, nach Name oder Adresse; !Name lässt eines weg. Leer: alle.",
+                "zh-Hans": "按名称或地址选择要显示的；用 !名称 排除某个。留空：全部。",
+                "zh-Hant": "依名稱或位址選擇要顯示的；用 !名稱 排除某個。留空：全部。"
+              },
+              "widget": "filter",
+              "choices": {
+                "source": "switchbot/devices",
+                "list": "devices"
+              }
+            },
+            "type": "array",
+            "items": {
+              "default": "",
+              "x-ui": {
+                "placeholder": "name, group/*, !old-*",
+                "choices": {
+                  "source": "switchbot/devices",
+                  "list": "devices"
+                }
+              },
+              "type": "string"
+            },
+            "x-filter": true
+          },
+          "historyMs": {
+            "title": "Line of the last",
+            "description": "0: no line.",
+            "default": 43200000,
+            "x-ui": {
+              "label": {
+                "en": "Line of the last",
+                "es": "Línea de las últimas",
+                "de": "Linie der letzten",
+                "zh-Hans": "曲线显示最近",
+                "zh-Hant": "曲線顯示最近"
+              },
+              "help": {
+                "en": "0: no line.",
+                "es": "0: sin línea.",
+                "de": "0: keine Linie.",
+                "zh-Hans": "0：不显示曲线。",
+                "zh-Hant": "0：不顯示曲線。"
+              },
+              "unit": "ms"
+            },
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 86400000
+          }
+        }
+      },
+      "screenshot": "docs/climate.png",
+      "animated": false,
+      "urgent": false
+    },
+    {
+      "type": "switchbot/doors",
+      "name": {
+        "en": "Doors",
+        "es": "Puertas",
+        "de": "Türen",
+        "zh-Hans": "门窗",
+        "zh-Hant": "門窗"
+      },
+      "description": {
+        "en": "SwitchBot contact sensors: the open doors and windows first, with how long they have been open, amber and then red when left open; a calm \"All closed\" when none is.",
+        "es": "Sensores de contacto SwitchBot: primero las puertas y ventanas abiertas, con cuánto tiempo llevan así, en ámbar y luego en rojo si se quedan abiertas; un tranquilo «Todo cerrado» cuando no hay ninguna.",
+        "de": "SwitchBot-Kontaktsensoren: offene Türen und Fenster zuerst, mit wie lange sie offen sind, gelb und dann rot, wenn sie offen bleiben; ein ruhiges „Alles zu“, wenn keine offen ist.",
+        "zh-Hans": "SwitchBot 门窗传感器：开着的门窗排在最前，显示已开多久，忘关时先变琥珀色再变红色；全部关好时显示安静的“全部关好”。",
+        "zh-Hant": "SwitchBot 門窗感測器：開著的門窗排在最前面，顯示已開多久，忘了關時先變琥珀色再變紅色；全部關好時顯示安靜的「全部關好」。"
+      },
+      "icon": "door-open",
+      "category": "info",
+      "tags": [
+        "switchbot",
+        "door",
+        "window",
+        "contact",
+        "bluetooth"
+      ],
+      "size": {
+        "min": {
+          "w": 120,
+          "h": 24
+        },
+        "preferred": {
+          "w": 320,
+          "h": 160
+        }
+      },
+      "chrome": "card",
+      "sources": [
+        "switchbot/devices"
+      ],
+      "options": {
+        "default": {
+          "devices": [],
+          "rows": 0
+        },
+        "x-ui": {},
+        "type": "object",
+        "properties": {
+          "devices": {
+            "title": "Devices",
+            "description": "Which to show, by name or address; !name leaves one out. Empty: all.",
+            "default": [],
+            "x-ui": {
+              "label": {
+                "en": "Devices",
+                "es": "Dispositivos",
+                "de": "Geräte",
+                "zh-Hans": "设备",
+                "zh-Hant": "裝置"
+              },
+              "help": {
+                "en": "Which to show, by name or address; !name leaves one out. Empty: all.",
+                "es": "Cuáles mostrar, por nombre o dirección; !nombre quita uno. Vacío: todos.",
+                "de": "Welche gezeigt werden, nach Name oder Adresse; !Name lässt eines weg. Leer: alle.",
+                "zh-Hans": "按名称或地址选择要显示的；用 !名称 排除某个。留空：全部。",
+                "zh-Hant": "依名稱或位址選擇要顯示的；用 !名稱 排除某個。留空：全部。"
+              },
+              "widget": "filter",
+              "choices": {
+                "source": "switchbot/devices",
+                "list": "devices"
+              }
+            },
+            "type": "array",
+            "items": {
+              "default": "",
+              "x-ui": {
+                "placeholder": "name, group/*, !old-*",
+                "choices": {
+                  "source": "switchbot/devices",
+                  "list": "devices"
+                }
+              },
+              "type": "string"
+            },
+            "x-filter": true
+          },
+          "rows": {
+            "title": "Rows",
+            "description": "0 = as many as fit. A number shows that many, in rows of a readable size (fewer when the tile is too small for them); the rest are counted in \"+N more\".",
+            "default": 0,
+            "x-ui": {
+              "label": {
+                "en": "Rows",
+                "es": "Filas",
+                "de": "Zeilen",
+                "zh-Hant": "列數",
+                "zh-Hans": "行数"
+              },
+              "help": {
+                "en": "0 = as many as fit. A number shows that many, in rows of a readable size (fewer when the tile is too small for them); the rest are counted in \"+N more\".",
+                "es": "0 = las que quepan. Con un número se ven esas, en filas de un tamaño legible (menos si la tesela no da para ellas); el resto se cuenta en «+N más».",
+                "de": "0 = so viele, wie passen. Eine Zahl zeigt so viele, in Zeilen lesbarer Größe (weniger, wenn die Kachel dafür zu klein ist); der Rest wird als „+N weitere“ gezählt.",
+                "zh-Hant": "0 = 盡量放滿。填數字則顯示該數量，並以易讀的大小排列（方格太小時會減少）；其餘的計入「還有 N 個」。",
+                "zh-Hans": "0 = 尽量放满。填数字则显示该数量，并以易读的大小排列（格子太小时会减少）；其余的计入“还有 N 个”。"
+              }
+            },
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 30
+          }
+        }
+      },
+      "screenshot": "docs/doors.png",
+      "animated": false,
+      "urgent": true
+    },
+    {
+      "type": "switchbot/presence",
+      "name": {
+        "en": "Motion",
+        "es": "Movimiento",
+        "de": "Bewegung",
+        "zh-Hans": "人体感应",
+        "zh-Hant": "人體感應"
+      },
+      "description": {
+        "en": "SwitchBot motion and presence sensors: where someone is moving now, and when each saw someone last.",
+        "es": "Sensores de movimiento y de presencia SwitchBot: dónde se mueve alguien ahora y cuándo vio cada uno a alguien por última vez.",
+        "de": "SwitchBot-Bewegungs- und Anwesenheitssensoren: wo sich gerade jemand bewegt und wann jeder zuletzt jemanden gesehen hat.",
+        "zh-Hans": "SwitchBot 人体与人在传感器：哪里现在有人活动，以及各自最后一次感应到人的时间。",
+        "zh-Hant": "SwitchBot 人體與人在感測器：哪裡現在有人活動，以及各自最後一次感應到人的時間。"
+      },
+      "icon": "activity",
+      "category": "info",
+      "tags": [
+        "switchbot",
+        "motion",
+        "presence",
+        "bluetooth"
+      ],
+      "size": {
+        "min": {
+          "w": 120,
+          "h": 24
+        },
+        "preferred": {
+          "w": 320,
+          "h": 160
+        }
+      },
+      "chrome": "card",
+      "sources": [
+        "switchbot/devices"
+      ],
+      "options": {
+        "default": {
+          "devices": [],
+          "rows": 0
+        },
+        "x-ui": {},
+        "type": "object",
+        "properties": {
+          "devices": {
+            "title": "Devices",
+            "description": "Which to show, by name or address; !name leaves one out. Empty: all.",
+            "default": [],
+            "x-ui": {
+              "label": {
+                "en": "Devices",
+                "es": "Dispositivos",
+                "de": "Geräte",
+                "zh-Hans": "设备",
+                "zh-Hant": "裝置"
+              },
+              "help": {
+                "en": "Which to show, by name or address; !name leaves one out. Empty: all.",
+                "es": "Cuáles mostrar, por nombre o dirección; !nombre quita uno. Vacío: todos.",
+                "de": "Welche gezeigt werden, nach Name oder Adresse; !Name lässt eines weg. Leer: alle.",
+                "zh-Hans": "按名称或地址选择要显示的；用 !名称 排除某个。留空：全部。",
+                "zh-Hant": "依名稱或位址選擇要顯示的；用 !名稱 排除某個。留空：全部。"
+              },
+              "widget": "filter",
+              "choices": {
+                "source": "switchbot/devices",
+                "list": "devices"
+              }
+            },
+            "type": "array",
+            "items": {
+              "default": "",
+              "x-ui": {
+                "placeholder": "name, group/*, !old-*",
+                "choices": {
+                  "source": "switchbot/devices",
+                  "list": "devices"
+                }
+              },
+              "type": "string"
+            },
+            "x-filter": true
+          },
+          "rows": {
+            "title": "Rows",
+            "description": "0 = as many as fit. A number shows that many, in rows of a readable size (fewer when the tile is too small for them); the rest are counted in \"+N more\".",
+            "default": 0,
+            "x-ui": {
+              "label": {
+                "en": "Rows",
+                "es": "Filas",
+                "de": "Zeilen",
+                "zh-Hant": "列數",
+                "zh-Hans": "行数"
+              },
+              "help": {
+                "en": "0 = as many as fit. A number shows that many, in rows of a readable size (fewer when the tile is too small for them); the rest are counted in \"+N more\".",
+                "es": "0 = las que quepan. Con un número se ven esas, en filas de un tamaño legible (menos si la tesela no da para ellas); el resto se cuenta en «+N más».",
+                "de": "0 = so viele, wie passen. Eine Zahl zeigt so viele, in Zeilen lesbarer Größe (weniger, wenn die Kachel dafür zu klein ist); der Rest wird als „+N weitere“ gezählt.",
+                "zh-Hant": "0 = 盡量放滿。填數字則顯示該數量，並以易讀的大小排列（方格太小時會減少）；其餘的計入「還有 N 個」。",
+                "zh-Hans": "0 = 尽量放满。填数字则显示该数量，并以易读的大小排列（格子太小时会减少）；其余的计入“还有 N 个”。"
+              }
+            },
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 30
+          }
+        }
+      },
+      "screenshot": "docs/presence.png",
+      "animated": false,
+      "urgent": false
+    },
+    {
+      "type": "switchbot/batteries",
+      "name": {
+        "en": "SwitchBot batteries",
+        "es": "Baterías SwitchBot",
+        "de": "SwitchBot-Akkus",
+        "zh-Hans": "SwitchBot 电量",
+        "zh-Hant": "SwitchBot 電量"
+      },
+      "description": {
+        "en": "The SwitchBot sensors whose battery is running low, or a calm \"Batteries OK\" with the lowest one.",
+        "es": "Los sensores SwitchBot que se están quedando sin pila, o un tranquilo «Pilas bien» con la más baja.",
+        "de": "Die SwitchBot-Sensoren, deren Batterie zur Neige geht, oder ein ruhiges „Batterien OK“ mit der schwächsten.",
+        "zh-Hans": "电量快用完的 SwitchBot 传感器，或安静的“电量正常”并显示最低的那个。",
+        "zh-Hant": "電量快用完的 SwitchBot 感測器，或安靜的「電量正常」並顯示最低的那個。"
+      },
+      "icon": "battery-low",
+      "category": "info",
+      "tags": [
+        "switchbot",
+        "battery",
+        "bluetooth"
+      ],
+      "size": {
+        "min": {
+          "w": 120,
+          "h": 24
+        },
+        "preferred": {
+          "w": 320,
+          "h": 110
+        }
+      },
+      "chrome": "card",
+      "sources": [
+        "switchbot/devices"
+      ],
+      "options": {
+        "default": {
+          "rows": 0
+        },
+        "x-ui": {},
+        "type": "object",
+        "properties": {
+          "rows": {
+            "title": "Rows",
+            "description": "0 = as many as fit. A number shows that many, in rows of a readable size (fewer when the tile is too small for them); the rest are counted in \"+N more\".",
+            "default": 0,
+            "x-ui": {
+              "label": {
+                "en": "Rows",
+                "es": "Filas",
+                "de": "Zeilen",
+                "zh-Hant": "列數",
+                "zh-Hans": "行数"
+              },
+              "help": {
+                "en": "0 = as many as fit. A number shows that many, in rows of a readable size (fewer when the tile is too small for them); the rest are counted in \"+N more\".",
+                "es": "0 = las que quepan. Con un número se ven esas, en filas de un tamaño legible (menos si la tesela no da para ellas); el resto se cuenta en «+N más».",
+                "de": "0 = so viele, wie passen. Eine Zahl zeigt so viele, in Zeilen lesbarer Größe (weniger, wenn die Kachel dafür zu klein ist); der Rest wird als „+N weitere“ gezählt.",
+                "zh-Hant": "0 = 盡量放滿。填數字則顯示該數量，並以易讀的大小排列（方格太小時會減少）；其餘的計入「還有 N 個」。",
+                "zh-Hans": "0 = 尽量放满。填数字则显示该数量，并以易读的大小排列（格子太小时会减少）；其余的计入“还有 N 个”。"
+              }
+            },
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 30
+          }
+        }
+      },
+      "screenshot": "docs/batteries.png",
+      "animated": false,
+      "urgent": true
+    }
+  ],
+  "sources": [
+    {
+      "type": "switchbot/devices",
+      "name": {
+        "en": "SwitchBot sensors",
+        "es": "Sensores SwitchBot",
+        "de": "SwitchBot-Sensoren",
+        "zh-Hans": "SwitchBot 传感器",
+        "zh-Hant": "SwitchBot 感測器"
+      },
+      "description": {
+        "en": "SwitchBot thermometers, hygrometers, door and motion sensors, heard straight from this computer's Bluetooth: what they broadcast every few seconds, read without pairing, connecting or a hub, and without the cloud. Linux (BlueZ) for now.",
+        "es": "Termómetros, higrómetros, sensores de puerta y de movimiento SwitchBot, oídos directamente por el Bluetooth de este ordenador: lo que emiten cada pocos segundos, leído sin emparejar, sin conectarse, sin hub y sin la nube. De momento, en Linux (BlueZ).",
+        "de": "SwitchBot-Thermometer, -Hygrometer, Tür- und Bewegungssensoren, direkt über das Bluetooth dieses Computers gehört: was sie alle paar Sekunden senden, gelesen ohne Koppeln, ohne Verbindung, ohne Hub und ohne Cloud. Vorerst unter Linux (BlueZ).",
+        "zh-Hans": "直接用这台电脑的蓝牙接收 SwitchBot 温湿度计、门窗传感器和人体传感器每隔几秒发出的广播：无需配对、连接、网关，也不经过云端。目前支持 Linux（BlueZ）。",
+        "zh-Hant": "直接用這台電腦的藍牙接收 SwitchBot 溫濕度計、門窗感測器和人體感測器每隔幾秒發出的廣播：不必配對、連線、網關，也不經過雲端。目前支援 Linux（BlueZ）。"
+      },
+      "polled": true,
+      "intervalMs": 60000,
+      "options": {
+        "default": {
+          "devices": [],
+          "names": {},
+          "openWarnMs": 0,
+          "openAlertMs": 600000,
+          "showAlerts": true,
+          "alertDoors": [],
+          "batteryWarn": 20,
+          "batteryAlert": 10,
+          "units": "auto",
+          "staleMs": 900000,
+          "listenMs": 10000,
+          "whileAudio": "short"
+        },
+        "x-ui": {},
+        "type": "object",
+        "properties": {
+          "devices": {
+            "title": "Devices",
+            "description": "Which to show, by name, address or kind (climate, contact, motion, presence); !AA:BB:* leaves one out. Empty: every SwitchBot heard.",
+            "default": [],
+            "x-ui": {
+              "label": {
+                "en": "Devices",
+                "es": "Dispositivos",
+                "de": "Geräte",
+                "zh-Hans": "设备",
+                "zh-Hant": "裝置"
+              },
+              "help": {
+                "en": "Which to show, by name, address or kind (climate, contact, motion, presence); !AA:BB:* leaves one out. Empty: every SwitchBot heard.",
+                "es": "Cuáles mostrar, por nombre, dirección o tipo (climate, contact, motion, presence); !AA:BB:* quita uno. Vacío: todos los SwitchBot que se oigan.",
+                "de": "Welche gezeigt werden, nach Name, Adresse oder Art (climate, contact, motion, presence); !AA:BB:* lässt eines weg. Leer: jedes gehörte SwitchBot-Gerät.",
+                "zh-Hans": "按名称、地址或类型（climate、contact、motion、presence）选择要显示的设备；用 !AA:BB:* 排除某个。留空：听到的所有 SwitchBot。",
+                "zh-Hant": "依名稱、位址或類型（climate、contact、motion、presence）選擇要顯示的裝置；用 !AA:BB:* 排除某個。留空：聽到的所有 SwitchBot。"
+              },
+              "widget": "filter",
+              "choices": {
+                "source": "switchbot/devices",
+                "list": "devices"
+              }
+            },
+            "type": "array",
+            "items": {
+              "default": "",
+              "x-ui": {
+                "placeholder": "name, group/*, !old-*",
+                "choices": {
+                  "source": "switchbot/devices",
+                  "list": "devices"
+                }
+              },
+              "type": "string"
+            },
+            "x-filter": true
+          },
+          "names": {
+            "title": "Names",
+            "description": "A name for each device, by its Bluetooth address (the SwitchBot app shows it under the device's settings → Device info): \"C7:6B:06:06:05:55\" → \"Living room\".",
+            "default": {},
+            "x-ui": {
+              "label": {
+                "en": "Names",
+                "es": "Nombres",
+                "de": "Namen",
+                "zh-Hans": "名称",
+                "zh-Hant": "名稱"
+              },
+              "help": {
+                "en": "A name for each device, by its Bluetooth address (the SwitchBot app shows it under the device's settings → Device info): \"C7:6B:06:06:05:55\" → \"Living room\".",
+                "es": "Un nombre para cada dispositivo, por su dirección Bluetooth (la app de SwitchBot la muestra en los ajustes del dispositivo → Información): \"C7:6B:06:06:05:55\" → \"Salón\".",
+                "de": "Ein Name für jedes Gerät, nach seiner Bluetooth-Adresse (die SwitchBot-App zeigt sie in den Geräteeinstellungen → Geräteinfo): \"C7:6B:06:06:05:55\" → \"Wohnzimmer\".",
+                "zh-Hans": "按蓝牙地址给每个设备起名（SwitchBot 应用在设备设置 → 设备信息中显示）：\"C7:6B:06:06:05:55\" → \"客厅\"。",
+                "zh-Hant": "依藍牙位址為每個裝置命名（SwitchBot App 在裝置設定 → 裝置資訊中顯示）：\"C7:6B:06:06:05:55\" → \"客廳\"。"
+              }
+            },
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "openWarnMs": {
+            "title": "Highlight an open door after",
+            "description": "It turns amber. 0: as soon as it opens.",
+            "default": 0,
+            "x-ui": {
+              "label": {
+                "en": "Highlight an open door after",
+                "es": "Resaltar una puerta abierta a partir de",
+                "de": "Offene Tür hervorheben nach",
+                "zh-Hans": "门开着多久后高亮",
+                "zh-Hant": "門開著多久後醒目顯示"
+              },
+              "help": {
+                "en": "It turns amber. 0: as soon as it opens.",
+                "es": "Se pone ámbar. 0: en cuanto se abre.",
+                "de": "Sie wird gelb. 0: sobald sie aufgeht.",
+                "zh-Hans": "显示为琥珀色。0：一打开就高亮。",
+                "zh-Hant": "顯示為琥珀色。0：一打開就醒目顯示。"
+              },
+              "unit": "ms"
+            },
+            "type": "integer",
+            "minimum": 0
+          },
+          "openAlertMs": {
+            "title": "Left open after",
+            "description": "It turns red and, if full-screen alerts are on, shows one, once each time it is left open.",
+            "default": 600000,
+            "x-ui": {
+              "label": {
+                "en": "Left open after",
+                "es": "Abierta demasiado tiempo a partir de",
+                "de": "Zu lange offen nach",
+                "zh-Hans": "门开着多久算忘关",
+                "zh-Hant": "門開著多久算忘了關"
+              },
+              "help": {
+                "en": "It turns red and, if full-screen alerts are on, shows one, once each time it is left open.",
+                "es": "Se pone roja y, si los avisos a pantalla completa están activados, muestra uno, una vez cada vez que se queda abierta.",
+                "de": "Sie wird rot und zeigt, wenn Vollbild-Warnungen an sind, eine Warnung, einmal jedes Mal, wenn sie offen bleibt.",
+                "zh-Hans": "显示为红色；若开启全屏提醒，每次忘关只提醒一次。",
+                "zh-Hant": "顯示為紅色；若開啟全螢幕提醒，每次忘了關只提醒一次。"
+              },
+              "unit": "ms"
+            },
+            "type": "integer",
+            "minimum": 60000
+          },
+          "showAlerts": {
+            "title": "Full-screen alert when a door is left open",
+            "default": true,
+            "x-ui": {
+              "label": {
+                "en": "Full-screen alert when a door is left open",
+                "es": "Aviso a pantalla completa si una puerta se queda abierta",
+                "de": "Vollbild-Warnung, wenn eine Tür offen bleibt",
+                "zh-Hans": "门忘关时全屏提醒",
+                "zh-Hant": "門忘了關時全螢幕提醒"
+              }
+            },
+            "type": "boolean"
+          },
+          "alertDoors": {
+            "title": "Doors that alert",
+            "description": "Which doors may raise the full-screen alert, by name or address; !Fridge leaves one out. Empty: every door.",
+            "default": [],
+            "x-ui": {
+              "label": {
+                "en": "Doors that alert",
+                "es": "Puertas que avisan",
+                "de": "Türen mit Warnung",
+                "zh-Hans": "会提醒的门",
+                "zh-Hant": "會提醒的門"
+              },
+              "help": {
+                "en": "Which doors may raise the full-screen alert, by name or address; !Fridge leaves one out. Empty: every door.",
+                "es": "Qué puertas pueden lanzar el aviso a pantalla completa, por nombre o dirección; !Nevera quita una. Vacío: todas.",
+                "de": "Welche Türen die Vollbild-Warnung auslösen dürfen, nach Name oder Adresse; !Kühlschrank lässt eine weg. Leer: alle.",
+                "zh-Hans": "哪些门可以触发全屏提醒，按名称或地址；用 !冰箱 排除某个。留空：所有门。",
+                "zh-Hant": "哪些門可以觸發全螢幕提醒，依名稱或位址；用 !冰箱 排除某個。留空：所有門。"
+              },
+              "widget": "filter",
+              "choices": {
+                "source": "switchbot/devices",
+                "list": "doors"
+              }
+            },
+            "type": "array",
+            "items": {
+              "default": "",
+              "x-ui": {
+                "placeholder": "name, group/*, !old-*",
+                "choices": {
+                  "source": "switchbot/devices",
+                  "list": "doors"
+                }
+              },
+              "type": "string"
+            },
+            "x-filter": true
+          },
+          "batteryWarn": {
+            "title": "Battery low at",
+            "default": 20,
+            "x-ui": {
+              "label": {
+                "en": "Battery low at",
+                "es": "Batería baja a partir de",
+                "de": "Akku niedrig ab",
+                "zh-Hans": "低电量阈值",
+                "zh-Hant": "低電量門檻"
+              },
+              "unit": "%"
+            },
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "batteryAlert": {
+            "title": "Battery almost empty at",
+            "default": 10,
+            "x-ui": {
+              "label": {
+                "en": "Battery almost empty at",
+                "es": "Batería casi vacía a partir de",
+                "de": "Akku fast leer ab",
+                "zh-Hans": "电量告急阈值",
+                "zh-Hant": "電量告急門檻"
+              },
+              "unit": "%"
+            },
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "units": {
+            "title": "Temperature in",
+            "default": "auto",
+            "x-ui": {
+              "label": {
+                "en": "Temperature in",
+                "es": "Temperatura en",
+                "de": "Temperatur in",
+                "zh-Hans": "温度单位",
+                "zh-Hant": "溫度單位"
+              },
+              "labels": {
+                "auto": {
+                  "en": "As each thermometer shows it",
+                  "es": "Como la muestra cada termómetro",
+                  "de": "Wie jedes Thermometer sie zeigt",
+                  "zh-Hans": "与各温度计显示一致",
+                  "zh-Hant": "與各溫度計顯示一致"
+                },
+                "celsius": "°C",
+                "fahrenheit": "°F"
+              }
+            },
+            "type": "string",
+            "enum": [
+              "auto",
+              "celsius",
+              "fahrenheit"
+            ]
+          },
+          "staleMs": {
+            "title": "Old after",
+            "description": "A device not heard for this long is shown dimmed, with when it was heard last.",
+            "default": 900000,
+            "x-ui": {
+              "label": {
+                "en": "Old after",
+                "es": "Antigua a partir de",
+                "de": "Veraltet nach",
+                "zh-Hans": "多久没收到算过时",
+                "zh-Hant": "多久沒收到算過時"
+              },
+              "help": {
+                "en": "A device not heard for this long is shown dimmed, with when it was heard last.",
+                "es": "Un dispositivo que no se oye desde hace este tiempo se muestra atenuado, con cuándo se oyó por última vez.",
+                "de": "Ein Gerät, das so lange nicht gehört wurde, wird gedimmt gezeigt, mit dem Zeitpunkt, zu dem es zuletzt gehört wurde.",
+                "zh-Hans": "超过这么久没收到的设备会变暗显示，并标出最后一次收到的时间。",
+                "zh-Hant": "超過這麼久沒收到的裝置會變暗顯示，並標出最後一次收到的時間。"
+              },
+              "advanced": true,
+              "unit": "ms"
+            },
+            "type": "integer",
+            "minimum": 120000
+          },
+          "listenMs": {
+            "title": "Listen for",
+            "description": "Each read scans Bluetooth this long, then rests until the next one (the source's interval, a minute by default). Shorter is gentler on Bluetooth headphones playing on the same adapter; longer hears far devices better.",
+            "default": 10000,
+            "x-ui": {
+              "label": {
+                "en": "Listen for",
+                "es": "Escuchar durante",
+                "de": "Zuhören für",
+                "zh-Hans": "每次收听时长",
+                "zh-Hant": "每次收聽時長"
+              },
+              "help": {
+                "en": "Each read scans Bluetooth this long, then rests until the next one (the source's interval, a minute by default). Shorter is gentler on Bluetooth headphones playing on the same adapter; longer hears far devices better.",
+                "es": "Cada lectura escucha el Bluetooth este tiempo y luego descansa hasta la siguiente (el intervalo de la fuente, un minuto por defecto). Más corto molesta menos a unos auriculares Bluetooth que suenen en el mismo adaptador; más largo oye mejor los dispositivos lejanos.",
+                "de": "Jedes Lesen scannt Bluetooth so lange und ruht dann bis zum nächsten (das Intervall der Quelle, standardmäßig eine Minute). Kürzer stört Bluetooth-Kopfhörer am selben Adapter weniger; länger hört entfernte Geräte besser.",
+                "zh-Hans": "每次读取会扫描蓝牙这么久，然后休息到下一次（数据源的间隔，默认一分钟）。越短对同一适配器上播放的蓝牙耳机影响越小；越长越能听到远处的设备。",
+                "zh-Hant": "每次讀取會掃描藍牙這麼久，然後休息到下一次（資料來源的間隔，預設一分鐘）。越短對同一介面卡上播放的藍牙耳機影響越小；越長越能聽到遠處的裝置。"
+              },
+              "advanced": true,
+              "unit": "ms"
+            },
+            "type": "integer",
+            "minimum": 2000,
+            "maximum": 60000
+          },
+          "whileAudio": {
+            "title": "While Bluetooth audio plays",
+            "default": "short",
+            "x-ui": {
+              "label": {
+                "en": "While Bluetooth audio plays",
+                "es": "Mientras suena audio Bluetooth",
+                "de": "Während Bluetooth-Audio läuft",
+                "zh-Hans": "蓝牙音频播放时",
+                "zh-Hant": "藍牙音訊播放時"
+              },
+              "advanced": true,
+              "labels": {
+                "short": {
+                  "en": "Listen briefly (3 s)",
+                  "es": "Escuchar poco (3 s)",
+                  "de": "Kurz zuhören (3 s)",
+                  "zh-Hans": "短暂收听（3 秒）",
+                  "zh-Hant": "短暫收聽（3 秒）"
+                },
+                "pause": {
+                  "en": "Don't scan",
+                  "es": "No escanear",
+                  "de": "Nicht scannen",
+                  "zh-Hans": "不扫描",
+                  "zh-Hant": "不掃描"
+                },
+                "normal": {
+                  "en": "As usual",
+                  "es": "Como siempre",
+                  "de": "Wie immer",
+                  "zh-Hans": "照常",
+                  "zh-Hant": "照常"
+                }
+              }
+            },
+            "type": "string",
+            "enum": [
+              "short",
+              "pause",
+              "normal"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "interludes": [],
+  "templates": [
+    {
+      "id": "home",
+      "name": {
+        "en": "Home",
+        "es": "Casa",
+        "de": "Zuhause",
+        "zh-Hans": "家",
+        "zh-Hant": "家"
+      },
+      "icon": "house",
+      "widgets": [
+        "switchbot/climate",
+        "switchbot/doors",
+        "switchbot/presence",
+        "switchbot/batteries"
+      ],
+      "layouts": [
+        "wide",
+        "tall"
+      ]
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/kiosko-lcd/kiosko-plugin-switchbot/issues",
+    "docs": "https://github.com/kiosko-lcd/kiosko-plugin-switchbot#readme"
+  },
+  "resources": {
+    "memoryMb": 15,
+    "cpu": "low"
+  }
+}

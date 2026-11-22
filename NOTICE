@@ -1,0 +1,39 @@
+kiosko-plugin-switchbot
+Copyright (c) Loksly. MIT licence (see LICENSE).
+
+src/decode.ts is a TypeScript port of the advertisement parsers of
+pySwitchbot (https://github.com/sblibs/pySwitchbot): switchbot/adv_parser.py,
+switchbot/adv_parsers/{_sensor_th,meter,hub2,hub3,hubmini_matter,weather_station,
+motion,contact,presence_sensor}.py and switchbot/const/presence_sensor.py.
+Its test advertisements (tests/test_adv_parser.py) are used in
+src/decode.test.ts. pySwitchbot's licence:
+
+MIT License
+
+Copyright (c) 2018 Daniel Høyer Iversen
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+The byte layouts are also documented by SwitchBot in
+https://github.com/OpenWonderLabs/SwitchBotAPI-BLE (README.md,
+devicetypes/meter.md, contactsensor.md, motionsensor.md); nothing of it is
+copied here, only cited.
+
+SwitchBot is a trademark of Woan Technology (Shenzhen) Co., Ltd. This plugin
+is not affiliated with or endorsed by them.
