@@ -14,7 +14,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        # Linux only, like the plugin (package.json "os"): it reads BlueZ; npm refuses to install it elsewhere.
+        # Add macos-latest and windows-latest with their readers.
+        os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     defaults:
       run:
