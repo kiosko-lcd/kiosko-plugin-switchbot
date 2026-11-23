@@ -6,12 +6,43 @@
  */
 import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { defineSource, matchFilter, t, type Alert } from '@kiosko/sdk';
+import { defineSource, matchFilter, t, type Alert, type Localized } from '@kiosko/sdk';
 import { demoData } from './demo.ts';
 import { L } from './i18n.ts';
 import { execRun, realSleep, scan, spawnHold, type Env, type WhileAudio } from './readers.ts';
 import { applyAdverts, emptyStore, forget, reviveStore, viewOf, type Store } from './state.ts';
 import type { Device, ReaderStatus, SwitchBotData } from './types.ts';
+import { KIND_LABELS, oneDecimal } from './common.ts';
+
+const CLOSED_L = L('closed', 'cerrada', 'zu', '关闭', '關閉');
+const OPEN_L = L('open', 'abierta', 'offen', '打开', '打開');
+const SOMEONE_L = L('someone', 'hay alguien', 'jemand da', '有人', '有人');
+const NO_ONE_L = L('no one', 'nadie', 'niemand', '无人', '無人');
+const MOTION_L = L('motion', 'movimiento', 'Bewegung', '有动静', '有動靜');
+const BATTERY_L = L('battery', 'batería', 'Batterie', '电量', '電量');
+
+/** "22,1° 49 % · hace 1 min": what a device said last and when, for telling devices apart in the editor. */
+export function readingLabel(d: Device, data: SwitchBotData, locale: string, tr: (text: Localized) => string, now = Date.now()): string {
+  const parts: string[] = [d.modelName];
+  if (d.temperature !== undefined) {
+    const f = data.units === 'auto' ? !!d.fahrenheit : data.units === 'fahrenheit';
+    parts.push(`${oneDecimal(locale, f ? (d.temperature * 9) / 5 + 32 : d.temperature)}°${f ? 'F' : 'C'}${d.humidity !== undefined ? ` ${Math.round(d.humidity)} %` : ''}`);
+  }
+  if (d.open !== undefined) parts.push(tr(d.open ? OPEN_L : CLOSED_L));
+  if (d.kind === 'presence' && d.motion !== undefined) parts.push(tr(d.motion ? SOMEONE_L : NO_ONE_L));
+  else if (d.motion) parts.push(tr(MOTION_L));
+  if (d.battery !== undefined) parts.push(`${tr(BATTERY_L)} ${d.battery} %`);
+  let ago = '';
+  try {
+    const s = Math.max(0, Math.round((now - d.lastSeen) / 1000));
+    const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
+    ago = s < 60 ? rtf.format(-s, 'second') : s < 3600 ? rtf.format(-Math.round(s / 60), 'minute') : rtf.format(-Math.round(s / 3600), 'hour');
+  } catch {
+    /* no relative time in this runtime */
+  }
+  if (ago) parts.push(ago);
+  return parts.join(' · ');
+}
 
 export const sourceOptions = t.object({
   devices: t.filter({
@@ -26,6 +57,8 @@ export const sourceOptions = t.object({
     choices: { source: 'switchbot/devices', list: 'devices' },
   }),
   names: t.map({
+    // Each address with its last reading in the editor (Kiosko 0.2.11 and later; older ones ignore it).
+    ...({ keyChoices: { source: 'switchbot/devices', list: 'addresses' } } as {}),
     label: L('Names', 'Nombres', 'Namen', '名称', '名稱'),
     help: L(
       'A name for each device, by its Bluetooth address (the SwitchBot app shows it under the device\'s settings → Device info): "C7:6B:06:06:05:55" → "Living room".',
@@ -301,5 +334,7 @@ export const devicesSource = defineSource({
   choices: {
     devices: (data) => data.devices.map((d) => ({ value: d.name || d.key, label: d.name ? `${d.name} (${d.modelName})` : `${d.key} (${d.modelName})`, group: d.kind })),
     doors: (data) => data.devices.filter((d) => d.kind === 'contact').map((d) => ({ value: d.name || d.key })),
+    // For naming them: always the address, and what it says now, so each one can be told apart.
+    addresses: (data, ctx) => data.devices.map((d) => ({ value: d.key, label: readingLabel(d, data, ctx.locale, ctx.t), group: ctx.t(KIND_LABELS[d.kind]) })),
   },
 });

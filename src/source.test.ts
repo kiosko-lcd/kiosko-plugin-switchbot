@@ -223,3 +223,21 @@ test('reading a door twice across a close: one alert id, then a new one', async 
   assert.equal(ids4.length, 1);
   assert.notDeepEqual(ids4, ids1);
 });
+
+test('naming devices: every address offered with what it said last and when', async () => {
+  const { demoData } = await import('./demo.ts');
+  const { readingLabel } = await import('./source.ts');
+  const { localize } = await import('@kiosko/sdk/i18n');
+  const now = Date.now();
+  const data = demoData(now, 'es');
+  const tr = (x: Parameters<typeof localize>[0]) => localize(x, 'es');
+  const choices = devicesSource.choices!.addresses!(data, { locale: 'es', t: tr } as never);
+  assert.equal(choices.length, data.devices.length);
+  assert.deepEqual(choices.map((c) => c.value), data.devices.map((d) => d.key));
+  const climate = data.devices.find((d) => d.temperature !== undefined)!;
+  const label = readingLabel({ ...climate, temperature: 22.14, humidity: 49.4, fahrenheit: false, lastSeen: now - 60_000 }, { ...data, units: 'auto' }, 'es', tr, now);
+  assert.match(label, /22,1°C 49 %/);
+  assert.match(label, /hace 1 minuto/);
+  const door = data.devices.find((d) => d.kind === 'contact');
+  if (door) assert.match(readingLabel({ ...door, open: false, lastSeen: now }, data, 'es', tr, now), /cerrada · .*ahora/);
+});
