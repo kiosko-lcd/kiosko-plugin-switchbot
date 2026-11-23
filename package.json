@@ -1,6 +1,6 @@
 {
   "name": "kiosko-plugin-switchbot",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Your SwitchBot thermometers, door and motion sensors on a small USB LCD panel, heard straight from the computer's Bluetooth: no hub, no cloud, no pairing. With a full-screen warning when a door is left open.",
   "type": "module",
   "license": "MIT",
