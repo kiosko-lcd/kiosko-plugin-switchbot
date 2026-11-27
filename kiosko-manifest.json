@@ -9,7 +9,7 @@
     "zh-Hans": "SwitchBot",
     "zh-Hant": "SwitchBot"
   },
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": {
     "en": "Your SwitchBot thermometers, door and motion sensors on the panel, heard straight from the computer's Bluetooth: no hub, no cloud, no pairing. With a full-screen warning when a door is left open.",
     "es": "Tus termómetros, sensores de puerta y de movimiento SwitchBot en el panel, oídos directamente por el Bluetooth del ordenador: sin hub, sin nube y sin emparejar. Con un aviso a pantalla completa si una puerta se queda abierta.",

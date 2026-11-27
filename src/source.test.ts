@@ -79,7 +79,7 @@ test('the BlueZ fixture: four SwitchBot devices heard, the neighbour skipped, no
   assert.equal(switchbotAdverts(parseManagedObjects(JSON.stringify(old)), T0).adverts.length, 3);
 });
 
-test('a window: an LE-only discovery held by bluetoothctl with no agent, BlueZ asked every 2 s, then scan off; nothing else is sent', async () => {
+test('a window: an LE-only discovery held by bluetoothctl with no agent, BlueZ asked every pollMs, then scan off; nothing else is sent', async () => {
   const f = fakeEnv(() => FIXTURE);
   const ac = new AbortController();
   const r = await scan({ ...(f.env as Env), signal: ac.signal }, { listenMs: 10_000, pollMs: 2000, whileAudio: 'short', shortMs: 3000 });
@@ -91,7 +91,7 @@ test('a window: an LE-only discovery held by bluetoothctl with no agent, BlueZ a
   const held = f.calls.filter((c) => c[0] === 'bluetoothctl');
   assert.deepEqual(held, [['bluetoothctl', '--agent', 'off']]);
   const busctl = f.calls.filter((c) => c[0] === 'busctl');
-  assert.equal(busctl.length, 6); // before, then every 2 s for 10 s
+  assert.equal(busctl.length, 6); // before, then every 2 s for 10 s (pollMs given here)
   assert.ok(busctl.every((c) => c.includes('GetManagedObjects')));
   // Never: pair, connect, trust, power, pairable, discoverable, remove.
   assert.ok(![...f.lines, ...f.calls.flat()].some((l) => /\b(pair|connect|trust|power|pairable|discoverable|remove|write)\b/i.test(l)));
@@ -154,6 +154,23 @@ test('a read: decoded devices from the fixture, thermometers first, with the out
   assert.equal(byKey['C8:6B:82:06:38:79']!.model, 'unknown'); // no scan response heard yet
   assert.equal(data.devices[0]!.kind, 'climate');
   assert.equal(state.saved, 1); // models learnt: written now
+});
+
+test('a read with the usual 10 s window starts busctl twice (before and at the end), not every 2 s', async () => {
+  // What the devices said changes mid-window: the end of it is what counts.
+  let polls = 0;
+  const later = JSON.parse(FIXTURE);
+  delete later.data[0]['/org/bluez/hci0/dev_C7_6B_06_06_2C_25'];
+  const f = fakeEnv(() => (polls++ === 0 ? JSON.stringify(later) : FIXTURE));
+  const data = await readSwitchBot(OPTIONS, { now: T0, signal: new AbortController().signal }, { env: f.env, state: memoryState() });
+  assert.equal(OPTIONS.listenMs, 10_000);
+  assert.deepEqual(f.calls.map((c) => c[0]), ['busctl', 'bluetoothctl', 'busctl']);
+  assert.equal(f.now() - T0, 10_000, 'it still listens the whole window');
+  assert.ok(data.devices.some((d) => d.key === 'C7:6B:06:06:2C:25'), 'a device first heard during the window counts');
+  // A long window is still asked every 10 s.
+  const long = fakeEnv(() => FIXTURE);
+  await readSwitchBot({ ...OPTIONS, listenMs: 30_000 }, { now: T0, signal: new AbortController().signal }, { env: long.env, state: memoryState() });
+  assert.equal(long.calls.filter((c) => c[0] === 'busctl').length, 4);
 });
 
 /* Alerts */
