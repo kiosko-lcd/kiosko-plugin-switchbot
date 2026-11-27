@@ -177,8 +177,15 @@ export type Options = {
 
 /** The short window while audio plays. */
 export const SHORT_MS = 3000;
-/** How often BlueZ is asked during a window. */
-export const POLL_MS = 2000;
+/**
+ * How often BlueZ is asked during a window: with the usual 10 s window, once,
+ * at its end. BlueZ keeps the latest advertisement of every device heard
+ * during the discovery (and its RSSI until the discovery stops), so asking at
+ * the end hears the same devices as asking every 2 s did; each ask is a
+ * `busctl` started from Kiosko's main thread (~30 ms blocked there), and every
+ * 2 s it was 6 of them a minute.
+ */
+export const POLL_MS = 10_000;
 /** The state is written at most this often, unless a door or a model changed. */
 export const SAVE_EVERY_MS = 5 * 60_000;
 

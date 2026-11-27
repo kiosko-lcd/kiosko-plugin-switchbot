@@ -16,7 +16,7 @@ export { decode } from './decode.ts';
 export default definePlugin({
   id: 'switchbot',
   name: L('SwitchBot', 'SwitchBot', 'SwitchBot', 'SwitchBot', 'SwitchBot'),
-  version: '0.1.0',
+  version: '0.1.2',
   description: L(
     'Your SwitchBot thermometers, door and motion sensors on the panel, heard straight from the computer\'s Bluetooth: no hub, no cloud, no pairing. With a full-screen warning when a door is left open.',
     'Tus termómetros, sensores de puerta y de movimiento SwitchBot en el panel, oídos directamente por el Bluetooth del ordenador: sin hub, sin nube y sin emparejar. Con un aviso a pantalla completa si una puerta se queda abierta.',

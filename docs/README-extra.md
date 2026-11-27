@@ -16,8 +16,9 @@ code:
   classic inquiry) that reports every advertisement (`duplicate-data on`).
   It is an active scan: it also gets the scan responses, where SwitchBot puts
   the device type and the battery.
-- During the window it asks BlueZ what it heard every 2 s
-  (`busctl --json=short … GetManagedObjects`), then stops the scan.
+- At the end of the window (every 10 s in a longer one) it asks BlueZ what it
+  heard (`busctl --json=short … GetManagedObjects`): BlueZ keeps the latest
+  advertisement of each device heard during the scan. Then it stops the scan.
 - Then it rests until the next read: the source's interval, **a minute** by
   default (Kiosko → Settings → Data sources). With the defaults the radio
   scans about a sixth of the time.

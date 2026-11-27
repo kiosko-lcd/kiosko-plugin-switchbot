@@ -15,10 +15,10 @@
  *   discovery belongs to the D-Bus client that started it, which is why it
  *   is held by a process that stays for the window rather than one
  *   `busctl call` (BlueZ ends it when its client goes).
- * - While the window is open, `busctl --json=short --system call org.bluez /
- *   org.freedesktop.DBus.ObjectManager GetManagedObjects` every couple of
- *   seconds: BlueZ keeps the latest manufacturer and service data of each
- *   device heard, and its RSSI while it is being heard.
+ * - At the end of the window (every 10 s in a longer one), `busctl
+ *   --json=short --system call org.bluez / org.freedesktop.DBus.ObjectManager
+ *   GetManagedObjects`: BlueZ keeps the latest manufacturer and service data
+ *   of each device heard, and its RSSI while it is being heard.
  * - Passive listening would be lighter still, but BlueZ offers it to
  *   unprivileged clients only through org.bluez.AdvertisementMonitorManager1,
  *   which needs bluetoothd started with --experimental: when there is none,
